@@ -605,11 +605,10 @@ def build() -> None:
     domain = (SITE / "CNAME").read_text(encoding="utf-8").strip() if (SITE / "CNAME").exists() else ""
     url = f"https://{domain}/" if domain else ""
     last = posts[-1] if posts else None
-    cover = next((m["src"] for p in reversed(posts) for m in p["media"] if m["type"] == "photo"), "")
     desc = ("Новости игры WARDOGS: обновления, патчи, события и заявления разработчиков. "
             "Все новости первыми выходят в Telegram-канале Wardogs News.")
     page = TEMPLATE.read_text(encoding="utf-8")
-    image = url + cover if cover else url + "assets/avatar.jpg"
+    image = url + "assets/og.jpg"  # постоянное превью 1200×630 для соцсетей и мессенджеров
     fill = {
         "FEED": feed_html(posts),
         "ABOUT": about,
@@ -617,6 +616,10 @@ def build() -> None:
         "URL": esc(url),
         "CANONICAL": f'<link rel="canonical" href="{esc(url)}">' if url else "",
         "OG_IMAGE": (f'<meta property="og:image" content="{esc(image)}">\n'
+                     '<meta property="og:image:type" content="image/jpeg">\n'
+                     '<meta property="og:image:width" content="1200">\n'
+                     '<meta property="og:image:height" content="630">\n'
+                     '<meta property="og:image:alt" content="Wardogs News — новости игры WARDOGS">\n'
                      f'<meta name="twitter:image" content="{esc(image)}">') if url else "",
         "UPDATED": f'<meta property="og:updated_time" content="{esc(last["date"])}">' if last else "",
         "JSONLD": json_ld(posts, url, desc),
