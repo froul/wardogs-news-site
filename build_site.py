@@ -558,7 +558,7 @@ def json_ld(posts: list[dict], url: str, desc: str) -> str:
         org,
         {"@type": "WebSite", "@id": url + "#site", "url": url, "name": "Wardogs News", "inLanguage": "ru",
          "description": desc, "publisher": {"@id": url + "#org"}, "about": game},
-        {"@type": "CollectionPage", "url": url, "name": "Wardogs News — новости игры WARDOGS",
+        {"@type": "CollectionPage", "url": url, "name": "Wardogs News — Новости. Инсайды. Обновления",
          "isPartOf": {"@id": url + "#site"}, "about": game, "inLanguage": "ru",
          "dateModified": posts[-1]["date"] if posts else None,
          "mainEntity": {"@type": "ItemList", "itemListOrder": "https://schema.org/ItemListOrderDescending",
@@ -619,7 +619,7 @@ def build() -> None:
                      '<meta property="og:image:type" content="image/jpeg">\n'
                      '<meta property="og:image:width" content="1200">\n'
                      '<meta property="og:image:height" content="630">\n'
-                     '<meta property="og:image:alt" content="Wardogs News — новости игры WARDOGS">\n'
+                     '<meta property="og:image:alt" content="Wardogs News — Новости. Инсайды. Обновления">\n'
                      f'<meta name="twitter:image" content="{esc(image)}">') if url else "",
         "UPDATED": f'<meta property="og:updated_time" content="{esc(last["date"])}">' if last else "",
         "JSONLD": json_ld(posts, url, desc),
