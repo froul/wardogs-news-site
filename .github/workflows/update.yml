@@ -1,0 +1,52 @@
+# Каждые 30 минут забирает новые посты с t.me/s/newswardogs и выкладывает сайт на GitHub Pages.
+name: Обновить сайт
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch: # кнопка «Run workflow» во вкладке Actions
+  push:
+    branches: [main]
+
+permissions:
+  contents: write # сохранить новые фото/видео в репозиторий
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install pillow
+
+      - name: Собрать ленту
+        run: python build_site.py
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }} # необязательно: для новых премиум-эмодзи
+
+      - name: Сохранить новые фото, видео и эмодзи
+        run: |
+          git config user.name "wardogs-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A site/media site/emoji
+          git diff --cached --quiet || (git commit -m "Новые медиа из канала" && git push)
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,8 @@
+# собирается заново при каждом запуске build_site.py
+site/index.html
+site/sitemap.xml
+site/robots.txt
+site/llms.txt
+site/llms-full.txt
+.env
+__pycache__/
